@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>SwersGPT</title>
 <link rel="icon" href="https://i.hizliresim.com/82fpag2.png">
 <style>
@@ -17,18 +17,25 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 40px;
-  background-color: #ffffff;
+  padding: 16px 20px;
+  background-color: #fff;
   box-shadow: 0 1px 6px rgba(0,0,0,0.05);
   position: sticky;
   top: 0;
   z-index: 100;
+  gap: 10px;
 }
 
 .left {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
+  overflow-x: auto;   /* yatay kaydırma */
+  scrollbar-width: none; /* Firefox gizle */
+}
+
+.left::-webkit-scrollbar {
+  display: none; /* Chrome/Safari gizle */
 }
 
 .brand {
@@ -37,10 +44,12 @@ body {
   gap: 10px;
   font-weight: 600;
   font-size: 18px;
+  flex-shrink: 0; /* kaydırmada küçülmesin */
 }
 
 .brand img {
   width: 38px;
+  flex-shrink: 0;
 }
 
 select, button {
@@ -49,6 +58,7 @@ select, button {
   border: 1px solid #ddd;
   background-color: #fff;
   font-size: 14px;
+  flex-shrink: 0; /* kaydırmada küçülmesin */
 }
 
 button {
@@ -128,16 +138,15 @@ button:hover {
   margin-top: 10px;
 }
 
-
 .extra-btns {
   display: flex;
   gap: 10px;
-  margin-left: 20px;
+  flex-shrink: 0; /* kaydırmada küçülmesin */
 }
+
 </style>
 </head>
 <body>
-
 
 <div id="modal">
   <div id="modalBox">
@@ -147,7 +156,6 @@ button:hover {
     <button onclick="saveKey()">Kaydet</button>
   </div>
 </div>
-
 
 <div class="topbar">
   <div class="left">
@@ -162,7 +170,6 @@ button:hover {
     </select>
     <select id="subject"><option value="">Ders</option></select>
     <button onclick="generate()">Soruları Üret</button>
-
     
     <div class="extra-btns">
       <button onclick="openSwers()">SwersGPT</button>
@@ -179,7 +186,6 @@ button:hover {
 let API_KEY = localStorage.getItem("api_key");
 if(API_KEY) document.getElementById("modal").style.display="none";
 
-
 function saveKey(){
   const v = document.getElementById("apiInput").value.trim();
   if(!v) return alert("Lütfen bir API Key girin!");
@@ -188,12 +194,10 @@ function saveKey(){
   document.getElementById("modal").style.display = "none";
 }
 
-
 function resetKey(){
   localStorage.removeItem("api_key");
   location.reload();
 }
-
 
 function updateSubjects(){
   const grade = document.getElementById("grade").value;
@@ -211,7 +215,6 @@ function updateSubjects(){
     subject.appendChild(o);
   });
 }
-
 
 async function generate(){
   if(!API_KEY) return alert("Önce API Key girin!");
@@ -250,7 +253,6 @@ async function generate(){
   }
 }
 
-
 function createCard(no, q){
   const card = document.createElement("div");
   card.className = "card";
@@ -280,7 +282,6 @@ function createCard(no, q){
 
   document.getElementById("questions").appendChild(card);
 }
-
 
 function openSwers(){
   window.open("https://swersgpt.github.io", "_blank");
