@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SwersGPT</title>
 <link rel="icon" href="https://i.hizliresim.com/82fpag2.png">
 <style>
@@ -24,18 +24,14 @@ body {
   top: 0;
   z-index: 100;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .left {
   display: flex;
   align-items: center;
   gap: 10px;
-  overflow-x: auto;   /* yatay kaydırma */
-  scrollbar-width: none; /* Firefox gizle */
-}
-
-.left::-webkit-scrollbar {
-  display: none; 
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -44,12 +40,10 @@ body {
   gap: 10px;
   font-weight: 600;
   font-size: 18px;
-  flex-shrink: 0; 
 }
 
 .brand img {
   width: 38px;
-  flex-shrink: 0;
 }
 
 select, button {
@@ -58,7 +52,6 @@ select, button {
   border: 1px solid #ddd;
   background-color: #fff;
   font-size: 14px;
-  flex-shrink: 0; 
 }
 
 button {
@@ -79,7 +72,8 @@ button:hover {
 
 .container {
   max-width: 900px;
-  margin: 40px auto;
+  margin: 20px auto;
+  padding: 0 15px;
 }
 
 .card {
@@ -141,9 +135,8 @@ button:hover {
 .extra-btns {
   display: flex;
   gap: 10px;
-  flex-shrink: 0; 
+  flex-wrap: wrap;
 }
-
 </style>
 </head>
 <body>
@@ -170,13 +163,14 @@ button:hover {
     </select>
     <select id="subject"><option value="">Ders</option></select>
     <button onclick="generate()">Soruları Üret</button>
-    
+
     <div class="extra-btns">
       <button onclick="openSwers()">SwersGPT</button>
       <button onclick="showInfo()">Bilgilendirme</button>
       <button onclick="showAbout()">Hakkımızda</button>
     </div>
   </div>
+
   <button class="reset" onclick="resetKey()">API Key Sıfırla</button>
 </div>
 
@@ -221,11 +215,35 @@ async function generate(){
   const grade = document.getElementById("grade").value;
   const subject = document.getElementById("subject").value;
   if(!grade || !subject) return alert("Lütfen sınıf ve ders seçin!");
-  
+
   const container = document.getElementById("questions");
   container.innerHTML = "Yükleniyor...";
-  
-  const prompt = `${grade}. sınıf ${subject} için 5 adet çoktan seçmeli soru üret. Sadece JSON formatında: [{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"answer":"A"}]`;
+
+  const prompt = `
+${grade}. sınıf ${subject} dersi için,
+Türkiye Cumhuriyeti Milli Eğitim Bakanlığı müfredatına uygun
+5 adet çoktan seçmeli soru üret.
+
+Kurallar:
+- Sorular MEB kazanımlarına uygun olsun.
+- ${grade}. sınıf seviyesine uygun olsun.
+- 4 şık olsun (A, B, C, D).
+- Yalnızca 1 doğru cevap olsun.
+- Doğru cevap kesin doğru olsun.
+- Yanlış şıklar mantıklı ama yanlış olsun.
+- Cevabı üretmeden önce kontrol et.
+
+Sadece şu JSON formatında cevap ver:
+[
+{
+"question":"...",
+"options":["A) ...","B) ...","C) ...","D) ..."],
+"answer":"A"
+}
+]
+
+JSON dışında hiçbir şey yazma.
+`;
 
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -234,7 +252,10 @@ async function generate(){
         "Authorization": "Bearer " + API_KEY,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({model:"llama-3.3-70b-versatile", messages:[{role:"user", content: prompt}]})
+      body: JSON.stringify({
+        model:"llama-3.3-70b-versatile",
+        messages:[{role:"user", content: prompt}]
+      })
     });
 
     const data = await response.json();
