@@ -111,23 +111,29 @@ async function generate(){
   container.innerHTML="Yükleniyor...";
 
   const prompt=`
-Sen MEB müfredatına tam hakim, dikkatli ve hata yapmayan uzman bir öğretmensin.
+Sen Türkiye MEB müfredatına tamamen hakim, akademik doğruluğu zorunlu olan uzman bir öğretmensin.
 
+Görev:
 ${grade}. sınıf ${subject} dersi için
-MEB kazanımlarına %100 uygun
+MEB kazanımlarına tam uyumlu
 5 adet çoktan seçmeli soru üret.
 
-Kurallar:
-- Tamamen Türkçe olacak.
-- 4 şık (A,B,C,D).
-- Yalnızca 1 doğru cevap.
-- Doğru cevap kesin doğru olacak.
+Zorunlu Kurallar:
+- Her soru %100 doğru bilgi içermeli.
+- Her soruda yalnızca 1 doğru cevap olmalı.
+- Diğer 3 şık kesinlikle yanlış olmalı.
+- Doğru cevap harfi gerçekten doğru olan şık ile eşleşmeli.
+- Cevap harfi rastgele seçilmemeli.
+- Soruları üretmeden önce doğruluğunu kontrol et.
+- Tamamen Türkçe yaz.
 - JSON dışında hiçbir şey yazma.
+- Kod bloğu kullanma.
 
-FORMAT:
+Çıktı formatı:
+
 [
 {
-"question":"...",
+"question":"Soru metni",
 "options":["A) ...","B) ...","C) ...","D) ..."],
 "answer":"A"
 }
@@ -143,10 +149,10 @@ FORMAT:
       },
       body:JSON.stringify({
         model:"llama-3.3-70b-versatile",
-        temperature:0.2,
+        temperature:0.1,
         top_p:0.9,
         messages:[
-          {role:"system",content:"Resmi, ciddi ve hatasız üretim yap. JSON formatını bozma."},
+          {role:"system",content:"Akademik doğruluk zorunludur. Hatalı soru üretme. Formatı bozma."},
           {role:"user",content:prompt}
         ]
       })
