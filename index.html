@@ -106,8 +106,7 @@ async function generate(){
   const grade=document.getElementById("grade").value;
   const subject=document.getElementById("subject").value;
   if(!grade||!subject) return alert("Sınıf ve ders seçin!");
-
-  const container=document.getElementById("questions");
+  const container=document.getElementById("questions"); 
   container.innerHTML="Yükleniyor...";
 
   const prompt=`
@@ -128,9 +127,9 @@ Zorunlu Kurallar:
 - Tamamen Türkçe yaz.
 - JSON dışında hiçbir şey yazma.
 - Kod bloğu kullanma.
+- Soruları 2 kere kontrol et yanlış cevap riski çok az olsun
 
 Çıktı formatı:
-
 [
 {
 "question":"Soru metni",
